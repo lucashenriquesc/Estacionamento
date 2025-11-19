@@ -10,6 +10,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -52,15 +54,19 @@ public class Estacionamento extends Application {
             primaryStage.setScene(addScene);
         });
 
-        //Clients ListView configuration:
+        clientListConfig(addButton.getLayoutY(), addButton.getMinHeight());
+
+        mainPane.getChildren().addAll(addButton, list); //Adding children to mainPane.
+    }
+
+    public void clientListConfig(double addButtonLayoutY, double addButtonMinHeight) {
+        //Main screen clients ListView configuration:
         list.setMinWidth(width-(width*0.1));
         list.setMaxWidth(width-(width*0.1));
         list.setLayoutX(width/2 - list.getMinWidth()/2);
-        list.setLayoutY(addButton.getLayoutY() + addButton.getMinHeight() + height * 0.01);
+        list.setLayoutY(addButtonLayoutY + addButtonMinHeight + height * 0.01);
 
         list.getItems().addAll("aiaiaia");
-
-        mainPane.getChildren().addAll(addButton, list); //Adding children to mainPane.
 
     }
 
@@ -72,6 +78,7 @@ public class Estacionamento extends Application {
         backButton.setMinHeight(height*0.05);
         backButton.setMaxHeight(height*0.05);
         backButton.setLayoutX(width/2 - backButton.getMinWidth()/2);
+        backButton.setLayoutY(height * 0.02);
 
         backButton.setOnMouseClicked(e -> {
             primaryStage.setScene(mainScene);
