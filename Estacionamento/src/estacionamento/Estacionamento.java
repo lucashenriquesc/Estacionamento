@@ -21,12 +21,25 @@ import java.awt.*;
 
 
 public class Estacionamento extends Application {
-    private int width = 400;
-    private int height = 500;
+    private int width = 400;                                         //Global window width.
+    private int height = 500;                                       //Global window height.
+    private Pane mainPane = new Pane();                            //Main screen pane.
+    private Scene mainScene = new Scene(mainPane, width, height); //Main screen scene.
+    private Pane addPane = new Pane();                           //Add screen pane.
+    private Scene addScene = new Scene(addPane, width, height); //Add screen scene.
+    private ListView list = new ListView();                    //Clients list ListView.
     @Override
     public void start(Stage primaryStage) {
+        mainSceneConfig(primaryStage);  //Main scene configuration.
+        addSceneConfig(primaryStage);   //Add scene configuration.
 
-        //Add clients button:
+        primaryStage.setTitle("Hello World!");
+        primaryStage.setScene(mainScene);
+        primaryStage.show();
+        primaryStage.setResizable(false);
+    }
+    private void mainSceneConfig(Stage primaryStage) {
+        //Clients adding button configuration:
         Button addButton = new Button("Adicionar");
         addButton.setMinWidth(width-(width*0.1));
         addButton.setMaxWidth(width-(width*0.1));
@@ -34,32 +47,37 @@ public class Estacionamento extends Application {
         addButton.setMaxHeight(height*0.05);
         addButton.setLayoutX(width/2 - addButton.getMinWidth()/2);
         addButton.setLayoutY(height * 0.02);
+
         addButton.setOnAction(event -> {
-            //Go to add screen
+            primaryStage.setScene(addScene);
         });
 
-        //Clients list ListView:
-        ListView list = new ListView();
+        //Clients ListView configuration:
         list.setMinWidth(width-(width*0.1));
         list.setMaxWidth(width-(width*0.1));
         list.setLayoutX(width/2 - list.getMinWidth()/2);
         list.setLayoutY(addButton.getLayoutY() + addButton.getMinHeight() + height * 0.01);
 
-        list.getItems().add("item 1");
-        list.getItems().add("item 2");
-        list.getItems().add("item 3");
-        list.getItems().add("item 4");
+        list.getItems().addAll("aiaiaia");
 
+        mainPane.getChildren().addAll(addButton, list); //Adding children to mainPane.
 
-        Pane pane = new Pane();
-        pane.getChildren().addAll(addButton, list);
+    }
 
-        Scene scene = new Scene(pane, width, height);
-        
-        primaryStage.setTitle("Hello World!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        primaryStage.setResizable(false);
+    public void addSceneConfig(Stage primaryStage) {
+        //Back button on client add screen:
+        Button backButton = new Button("Back");
+        backButton.setMinWidth(width-(width*0.1));
+        backButton.setMaxWidth(width-(width*0.1));
+        backButton.setMinHeight(height*0.05);
+        backButton.setMaxHeight(height*0.05);
+        backButton.setLayoutX(width/2 - backButton.getMinWidth()/2);
+
+        backButton.setOnMouseClicked(e -> {
+            primaryStage.setScene(mainScene);
+        });
+
+        addPane.getChildren().add(backButton); // Adding children to addPane.
     }
 
     public static void main(String[] args) {
