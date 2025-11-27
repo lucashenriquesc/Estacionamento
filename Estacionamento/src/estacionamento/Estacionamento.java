@@ -1,94 +1,164 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMain.java to edit this template
- */
 package estacionamento;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.awt.Color;
-
-import java.awt.*;
 
 
 public class Estacionamento extends Application {
-    private int width = 400;                                         //Global window width.
-    private int height = 500;                                       //Global window height.
-    private Pane mainPane = new Pane();                            //Main screen pane.
-    private Scene mainScene = new Scene(mainPane, width, height); //Main screen scene.
-    private Pane addPane = new Pane();                           //Add screen pane.
-    private Scene addScene = new Scene(addPane, width, height); //Add screen scene.
-    private ListView list = new ListView();                    //Clients list ListView.
+    // Window resolution:
+    private int width = 400;
+    private int height = 500;
+
+    // VBox and scene
+    private VBox mainVBox = new VBox(10);                                // Main scene vbox.
+    private Scene mainScene = new Scene(mainVBox, width, height);          // Main scene.
+    private VBox addVBox = new VBox(10);                               // Add scene vbox.
+    private Scene addScene = new Scene(addVBox, width, height);          // Add scene.
+
+    // mainVBox nodes
+    private ListView clientsList = new ListView();                    // Clients list ListView.
+    Button addButton = new Button("Adicionar");                   // Add new clients button on mainScene.
+
+    // addVBox nodes
+    Button backButton = new Button("Back");                     // Back button to mainScene.
+    Button saveButton = new Button("Salvar");                  // Save new client button.
+    Label clientNameLabel = new Label("Nome do cliente: ");   // Client name label on add scene.
+    TextField clientNameTextField = new TextField();            // Client name textfield on add scene.
+    Label vehiclePlateLabel = new Label("Placa");           // Client vehicle plate label on add scene.
+    TextField vehiclePlateTextField = new TextField();        // Client vehicle plate textfield on add scene.
+    Label clientPhoneLabel = new Label("Telefone: ");     // Client phone number label on add scene.
+    TextField clientPhoneTextField = new TextField();       // Client phone number textfield on add scene.
+
     @Override
     public void start(Stage primaryStage) {
-        mainSceneConfig(primaryStage);  //Main scene configuration.
-        addSceneConfig(primaryStage);   //Add scene configuration.
+        // Application VBox setup:
+        mainVBoxSetup(primaryStage);
+        addVBoxSetup(primaryStage);
 
+        // Stage setup:
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(mainScene);
         primaryStage.show();
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
     }
-    private void mainSceneConfig(Stage primaryStage) {
-        //Clients adding button configuration:
-        Button addButton = new Button("Adicionar");
-        addButton.setMinWidth(width-(width*0.1));
-        addButton.setMaxWidth(width-(width*0.1));
+
+    // Setup for the mainVBox and its nodes
+    private void mainVBoxSetup(Stage primaryStage) {
+        mainVBox.setAlignment(Pos.TOP_CENTER);
+        mainVBox.setPadding(new Insets(15));
+
+        // mainVBox nodes adding and setup:
+        addButtonSetup(primaryStage);
+        clientsListSetup();
+    }
+
+    // Configuration for addButton for adding a new client information
+    private void addButtonSetup(Stage primaryStage) {
+        addButton.setPrefWidth(width);
         addButton.setMinHeight(height*0.05);
         addButton.setMaxHeight(height*0.05);
-        addButton.setLayoutX(width/2 - addButton.getMinWidth()/2);
-        addButton.setLayoutY(height * 0.02);
 
         addButton.setOnAction(event -> {
             primaryStage.setScene(addScene);
         });
 
-        clientListConfig(addButton.getLayoutY(), addButton.getMinHeight());
-
-        mainPane.getChildren().addAll(addButton, list); //Adding children to mainPane.
+        mainVBox.getChildren().add(addButton);
     }
 
-    public void clientListConfig(double addButtonLayoutY, double addButtonMinHeight) {
-        //Main screen clients ListView configuration:
-        list.setMinWidth(width-(width*0.1));
-        list.setMaxWidth(width-(width*0.1));
-        list.setLayoutX(width/2 - list.getMinWidth()/2);
-        list.setLayoutY(addButtonLayoutY + addButtonMinHeight + height * 0.01);
+    // Configuration for the clients ListView
+    private void clientsListSetup() {
+        clientsList.setPrefWidth(width);
+        clientsList.setPrefHeight(height);
 
-        list.getItems().addAll("aiaiaia");
+        clientsList.getItems().add("aiaiaia");  //Test text, delete later.
 
+        mainVBox.getChildren().add(clientsList);
     }
 
-    public void addSceneConfig(Stage primaryStage) {
-        //Back button on client add screen:
-        Button backButton = new Button("Back");
-        backButton.setMinWidth(width-(width*0.1));
-        backButton.setMaxWidth(width-(width*0.1));
+    // Setup for the addVBox and its nodes
+    private void addVBoxSetup(Stage primaryStage) {
+        addVBox.setAlignment(Pos.TOP_CENTER);
+        addVBox.setPadding(new Insets(15));
+
+        // addVBox nodes adding and setup:
+        backButtonSetup(primaryStage);
+        clientNameSetup();
+        vehiclePlateSetup();
+        clientPhoneSetup();
+        saveButtonSetup(primaryStage);
+    }
+
+    // Configures the button to return to the mainScene
+    private void backButtonSetup(Stage primaryStage) {
+        backButton.setPrefWidth(width);
         backButton.setMinHeight(height*0.05);
         backButton.setMaxHeight(height*0.05);
-        backButton.setLayoutX(width/2 - backButton.getMinWidth()/2);
-        backButton.setLayoutY(height * 0.02);
 
         backButton.setOnMouseClicked(e -> {
             primaryStage.setScene(mainScene);
         });
 
-        addPane.getChildren().add(backButton); // Adding children to addPane.
+        addVBox.getChildren().add(backButton);
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    // Configures client name Label and TextField
+    private void clientNameSetup() {
+        // Client name Label configuration
+        clientNameLabel.setPrefWidth(width);
+        clientNameLabel.setAlignment(Pos.CENTER);
+
+        // Client name TextField configuration
+        clientNameTextField.setPrefWidth(width);
+
+        addVBox.getChildren().addAll(clientNameLabel, clientNameTextField);
     }
-    
+
+    // Configures vehicle plate Label and TextField
+    private void vehiclePlateSetup() {
+        // Vehicle plate label configuration
+        vehiclePlateLabel.setPrefWidth(width);
+        vehiclePlateLabel.setAlignment(Pos.CENTER);
+
+        // Vehicle plate TextField configuration
+        vehiclePlateTextField.setPrefWidth(width);
+
+        addVBox.getChildren().addAll(vehiclePlateLabel, vehiclePlateTextField);
+    }
+    // Configures client phone number Label and TextFiel:
+    private void clientPhoneSetup() {
+        // Client phone number Label configuration
+        clientPhoneLabel.setPrefWidth(width);
+        clientPhoneLabel.setAlignment(Pos.CENTER);
+
+        // Client phone number TextField configuration
+        clientPhoneTextField.setPrefWidth(width);
+
+        addVBox.getChildren().addAll(clientPhoneLabel, clientPhoneTextField);
+    }
+
+    // Configures saveButton for saving a new client
+    private void saveButtonSetup(Stage primaryStage) {
+        saveButton.setPrefWidth(width);
+        saveButton.setMinHeight(height*0.05);
+        saveButton.setMaxHeight(height*0.05);
+
+        saveButton.setOnMouseClicked(e -> {
+            // Method to verify user input here
+        });
+
+        addVBox.getChildren().add(saveButton);
+    }
+    private void oi () {
+        
+    }
+    public static void main(String[] args) { launch(args); }
+
 }
