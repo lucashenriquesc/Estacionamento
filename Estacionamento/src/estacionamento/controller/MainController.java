@@ -6,8 +6,13 @@ import estacionamento.service.ClientServices;
 public class MainController {
     private ClientServices clientServices = new  ClientServices();
 
-    public void saveClient(Client client) {
+    // Save the client to the mainView list
+    public void addClient(Client client) {
+        clientServices.verifyClientsHere(client);
+    }
 
-        clientServices.verifyClient(client);
+    // Save the client information for future visits
+    public void saveClientInfo(Client client) {
+        clientServices.verifyClientExists(client);
     }
 }

@@ -1,12 +1,21 @@
 package estacionamento.service;
-import estacionamento.model.Clie0nt;
+import estacionamento.model.Client;
+import estacionamento.repository.ClientRepository;
 
-0public class ClientServices {
-  0  public void verifyClient(Client client) {
+public class ClientServices {
+    private ClientRepository clientRepository = new ClientRepository();
+
+    // Verifica se client já não está na lista de contatos salvos
+    public void verifyClientExists(Client client) {
 
     }
 
+    // Verifica se o cliente já não está no estacionamento
+    public void verifyClientsHere(Client client) {
 
+    }
+
+    //Verify if clients name is valid
     public void  verifyName() {
 
     }
