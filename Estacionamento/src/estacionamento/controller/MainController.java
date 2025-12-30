@@ -1,18 +1,28 @@
 package estacionamento.controller;
 
 import estacionamento.model.Client;
+import estacionamento.repository.ClientRepository;
 import estacionamento.service.ClientServices;
+import javafx.collections.ObservableList;
 
 public class MainController {
-    private ClientServices clientServices = new  ClientServices();
+    private final ClientRepository clientRepository;
+    private final ClientServices clientServices;
 
-    // Save the client to the mainView list
-    public void addClient(Client client) {
-        clientServices.verifyClientsHere(client);
+    public MainController(ClientRepository clientRepository, ClientServices clientServices) {
+        this.clientRepository = clientRepository;
+        this.clientServices = clientServices;
     }
 
-    // Save the client information for future visits
-    public void saveClientInfo(Client client) {
-        clientServices.verifyClientExists(client);
+    public ObservableList<Client> getClients() {
+         return clientServices.getClients();
+    }
+
+    public void addClient(Client client) {
+        clientServices.addClient(client);
+    }
+
+    public void deleteClient(Client client) {
+        clientServices.deleteClient(client);
     }
 }

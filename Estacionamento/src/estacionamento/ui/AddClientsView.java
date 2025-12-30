@@ -2,42 +2,47 @@ package estacionamento.ui;
 
 import estacionamento.controller.MainController;
 import estacionamento.model.Client;
+import estacionamento.navigation.Navigator;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AddClientsView {
-    Region region = new Region();
-
-    int width = 400;
-    int height = 500;
-
-    MainController mainController;
-    ListView clientsList;
-
+    private Region region = new Region();
+    private MainController mainController;
+    private Navigator navigator;
     private Scene scene;
     private VBox vBox = new  VBox(10);
+    private VBox platesFieldsVBox = new VBox(5);
+    private ScrollPane scrollPane = new ScrollPane(vBox);
 
-    Button backButton = new Button("Voltar");
-    Button saveButton = new Button("Salvar");
-    Label clientNameLabel = new Label("Nome do cliente: ");
-    TextField clientNameTextField = new TextField();
-    Label vehiclePlateLabel = new Label("Placa");
-    TextField vehiclePlateTextField = new TextField();
-    Label clientPhoneLabel = new Label("Telefone: ");
-    TextField clientPhoneTextField = new TextField();
+    private Map<Label, TextField> platesFieldsList = new HashMap<>();
+    private Button backButton = new Button("Voltar");
+    private Button saveButton = new Button("Salvar");
+    private Button addPlateButton = new Button("Adicionar placa");
+    private Label clientNameLabel = new Label("Nome do cliente: ");
+    private Label vehiclePlateLabel = new  Label("Placa 1:");
+    private Label clientPhoneLabel = new Label("Telefone: ");
+    private TextField clientNameTextField = new TextField();
+    private TextField vehiclePlateTextField = new TextField();
+    private TextField clientPhoneTextField = new TextField();
 
-    public AddClientsView(Stage primaryStage, MainController mainController, MainView mainView) {
+    public AddClientsView(MainController mainController, Navigator navigator) {
         this.mainController = mainController;
-        setup(primaryStage, mainView);
+        this.navigator = navigator;
+        setup();
     }
 
     // Return the AddClientsView scene
@@ -46,63 +51,71 @@ public class AddClientsView {
     }
 
     // Configures AddClientsView
-    private void setup(Stage primaryStage, MainView mainView) {
+    private void setup() {
+        // vBox configuration
         vBox.setAlignment(Pos.TOP_CENTER);
         vBox.setPadding(new Insets(15));
         vBox.setVgrow(region, Priority.ALWAYS);
 
-        scene = new Scene(vBox, width, height);
+        //scrollPane.setFitToWidth(true);
+        //scrollPane.setFitToHeight(true);
+        //vBox.minHeightProperty().bind(scrollPane.heightProperty());
 
-        buttonsSetup(primaryStage, mainView);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        // scene instantiation
+        scene = new Scene(scrollPane);
+
+        // Nodes setup
+        platesFieldsVBox.setAlignment(Pos.CENTER);
+        buttonsSetup();
         clientInfoSetup();
-
-        vBox.getChildren().addAll(backButton, clientNameLabel, clientNameTextField, vehiclePlateLabel, vehiclePlateTextField,
-                clientPhoneLabel, clientPhoneTextField, region, saveButton);
+        vBox.getChildren().addAll(
+                backButton, clientNameLabel, clientNameTextField, vehiclePlateLabel, platesFieldsVBox,
+                clientPhoneLabel, clientPhoneTextField, addPlateButton, region, saveButton
+        );
     }
 
     //Configures add button for AddClientsView
-    private void buttonsSetup(Stage primaryStage, MainView mainView) {
-        // Back button
-        backButton.setPrefWidth(width);
-        backButton.setMinHeight(height*0.05);
-        backButton.setMaxHeight(height*0.05);
+    private void buttonsSetup() {
+        // Back to MainView button
         vBox.setMargin(backButton, new Insets(0, 0, 20, 0));
-
-        backButton.setOnMouseClicked(e -> {
-            primaryStage.setScene(mainView.getScene());
-        });
-
-        // Save new client button
-        saveButton.setPrefWidth(width);
-        saveButton.setMinHeight(height*0.05);
-        saveButton.setMaxHeight(height*0.05);
-
-        saveButton.setOnMouseClicked(e -> {
-            Client client = new Client(
-                    clientNameTextField.getText(),
-                    vehiclePlateTextField.getText(),
-                    clientPhoneTextField.getText());
-
+        backButton.setOnAction(e -> navigator.showMainView());
+        // Button for adding new client
+        saveButton.setOnAction(e -> {
+            List<String> tempPlatesList = new ArrayList<String>();
+            for (Map.Entry<Label, TextField> field : platesFieldsList.entrySet()) {
+                tempPlatesList.add(field.getValue().getText());
+            }
+            Client client = new Client(clientNameTextField.getText(), tempPlatesList, clientPhoneTextField.getText());
             mainController.addClient(client);
+        });
+        // Button for adding plate field
+        vBox.setMargin(addPlateButton, new Insets(20, 0, 20, 0));
+        addPlateButton.setOnAction(e -> {
+            Label newPlateLabel = new Label("Placa " + (platesFieldsList.size() + 1) + ":");
+            // Setup for the additional plate labels and fields
+            TextField newPlateField = new TextField();
+            newPlateLabel.setAlignment(Pos.CENTER);
+            newPlateField.setAlignment(Pos.CENTER);
+            platesFieldsVBox.getChildren().addAll(newPlateLabel, newPlateField);
+            platesFieldsList.put(newPlateLabel, newPlateField);
         });
     }
 
     // Configures the client information Labels and TextFields for AddClientsView
     private void clientInfoSetup() {
         // Client name Label and TextField
-        clientNameLabel.setPrefWidth(width);
         clientNameLabel.setAlignment(Pos.CENTER);
-        clientNameTextField.setPrefWidth(width);
-
+        clientNameTextField.setAlignment(Pos.CENTER);
         // Client vehicle plate Label and TextField
-        vehiclePlateLabel.setPrefWidth(width);
         vehiclePlateLabel.setAlignment(Pos.CENTER);
-        vehiclePlateTextField.setPrefWidth(width);
-
+        vehiclePlateTextField.setAlignment(Pos.CENTER);
+        platesFieldsVBox.getChildren().add(vehiclePlateTextField);
+        platesFieldsList.put(vehiclePlateLabel, vehiclePlateTextField);
         // Client phone number Label and TextField
-        clientPhoneLabel.setPrefWidth(width);
         clientPhoneLabel.setAlignment(Pos.CENTER);
-        clientPhoneTextField.setPrefWidth(width);
+        clientPhoneTextField.setAlignment(Pos.CENTER);
     }
-
 }
